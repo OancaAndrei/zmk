@@ -13,6 +13,7 @@ struct zmk_widget_arasaka {
     sys_snode_t node;
     lv_obj_t *obj;
     lv_anim_t anim;
+    int32_t step;
 };
 
 int zmk_widget_arasaka_init(struct zmk_widget_arasaka *widget, lv_obj_t *parent);
