@@ -37,6 +37,19 @@ LV_IMG_DECLARE(arasaka_16);
 LV_IMG_DECLARE(arasaka_17);
 LV_IMG_DECLARE(arasaka_18);
 LV_IMG_DECLARE(arasaka_19);
+LV_IMG_DECLARE(arasaka_info_00);
+LV_IMG_DECLARE(arasaka_info_01);
+LV_IMG_DECLARE(arasaka_info_02);
+LV_IMG_DECLARE(arasaka_info_03);
+LV_IMG_DECLARE(arasaka_info_04);
+LV_IMG_DECLARE(arasaka_info_05);
+LV_IMG_DECLARE(arasaka_info_06);
+LV_IMG_DECLARE(arasaka_info_07);
+LV_IMG_DECLARE(arasaka_info_08);
+LV_IMG_DECLARE(arasaka_info_09);
+LV_IMG_DECLARE(arasaka_info_10);
+LV_IMG_DECLARE(arasaka_info_11);
+LV_IMG_DECLARE(arasaka_transparent);
 
 const void *images[] = {
     // arasaka_logo [0-10]
@@ -60,7 +73,37 @@ const void *images[] = {
     &arasaka_14,
     &arasaka_13,
     &arasaka_12,
+    // info [19-30]
+    &arasaka_info_11,
+    &arasaka_info_10,
+    &arasaka_info_09,
+    &arasaka_info_08,
+    &arasaka_info_07,
+    &arasaka_info_06,
+    &arasaka_info_05,
+    &arasaka_info_04,
+    &arasaka_info_03,
+    &arasaka_info_02,
+    &arasaka_info_01,
+    &arasaka_info_00,
+    // transparent [31]
+    &arasaka_transparent,
 };
+
+int32_t lv_anim_path_linear_glitch(const lv_anim_t *a) {
+    int32_t new_value = lv_anim_path_linear(a);
+
+    // Add the glitch effect.
+    int glitch_chance = lv_rand(0, 100);
+    int16_t glitch = lv_rand(-5, 5) * (glitch_chance / 70);
+
+    new_value += glitch;
+    if (new_value < a->start_value) new_value = a->start_value;
+    if (new_value > a->end_value) new_value = a->end_value;
+
+    return new_value;
+ }
+
 
 void set_img_src(void *var, int32_t val) {
     lv_obj_t *img = (lv_obj_t *)var;
@@ -94,7 +137,23 @@ void arasaka_anim_run_qr_code_glitch(struct zmk_widget_arasaka *widget) {
 void arasaka_anim_run_qr_code_idle(struct zmk_widget_arasaka *widget) {
     lv_anim_set_values(&widget->anim, 18, 18);
     lv_anim_set_path_cb(&widget->anim, lv_anim_path_linear);
-    lv_anim_set_time(&widget->anim, 5000);
+    lv_anim_set_time(&widget->anim, 2000);
+
+    lv_anim_start(&widget->anim);
+}
+
+void arasaka_anim_run_info_glitch(struct zmk_widget_arasaka *widget) {
+    lv_anim_set_values(&widget->anim, 19, 30);
+    lv_anim_set_path_cb(&widget->anim, lv_anim_path_linear_glitch);
+    lv_anim_set_time(&widget->anim, 700);
+
+    lv_anim_start(&widget->anim);
+}
+
+void arasaka_anim_run_info_idle(struct zmk_widget_arasaka *widget) {
+    lv_anim_set_values(&widget->anim, 31, 31);
+    lv_anim_set_path_cb(&widget->anim, lv_anim_path_linear);
+    lv_anim_set_time(&widget->anim, 3000);
 
     lv_anim_start(&widget->anim);
 }
@@ -102,7 +161,7 @@ void arasaka_anim_run_qr_code_idle(struct zmk_widget_arasaka *widget) {
 void arasaka_anim_on_finish(lv_anim_t *a) {
     struct zmk_widget_arasaka *widget = (struct zmk_widget_arasaka *)lv_anim_get_user_data(a);
 
-    widget->step = (widget->step + 1) % 4;
+    widget->step = (widget->step + 1) % 6;
 
     if (widget->step == 0) {
         arasaka_anim_run_glitch(widget);
@@ -112,6 +171,10 @@ void arasaka_anim_on_finish(lv_anim_t *a) {
         arasaka_anim_run_qr_code_glitch(widget);
     } else if (widget->step == 3) {
         arasaka_anim_run_qr_code_idle(widget);
+    } else if (widget->step == 4) {
+        arasaka_anim_run_info_glitch(widget);
+    } else if (widget->step == 5) {
+        arasaka_anim_run_info_idle(widget);
     }
 }
 
