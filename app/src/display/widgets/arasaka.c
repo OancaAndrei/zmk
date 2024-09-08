@@ -94,7 +94,7 @@ int32_t lv_anim_path_linear_glitch(const lv_anim_t *a) {
     int32_t new_value = lv_anim_path_linear(a);
 
     // Add the glitch effect.
-    int glitch_chance = lv_rand(0, 100);
+    int8_t glitch_chance = lv_rand(0, 100);
     int16_t glitch = lv_rand(-5, 5) * (glitch_chance / 70);
 
     new_value += glitch;
@@ -102,8 +102,15 @@ int32_t lv_anim_path_linear_glitch(const lv_anim_t *a) {
     if (new_value > a->end_value) new_value = a->end_value;
 
     return new_value;
- }
+}
 
+int32_t lv_anim_path_idle_glitch(const lv_anim_t *a) {
+    int8_t glitch_chance = lv_rand(0, 100);
+
+    if (glitch_chance < 70) return a->end_value;
+
+    return lv_rand(a->start_value, a->end_value);
+}
 
 void set_img_src(void *var, int32_t val) {
     lv_obj_t *img = (lv_obj_t *)var;
@@ -119,8 +126,8 @@ void arasaka_anim_run_glitch(struct zmk_widget_arasaka *widget) {
 }
 
 void arasaka_anim_run_idle_logo(struct zmk_widget_arasaka *widget) {
-    lv_anim_set_values(&widget->anim, 10, 10);
-    lv_anim_set_path_cb(&widget->anim, lv_anim_path_linear);
+    lv_anim_set_values(&widget->anim, 0, 10);
+    lv_anim_set_path_cb(&widget->anim, lv_anim_path_idle_glitch);
     lv_anim_set_time(&widget->anim, 5000);
 
     lv_anim_start(&widget->anim);
@@ -135,8 +142,8 @@ void arasaka_anim_run_qr_code_glitch(struct zmk_widget_arasaka *widget) {
 }
 
 void arasaka_anim_run_qr_code_idle(struct zmk_widget_arasaka *widget) {
-    lv_anim_set_values(&widget->anim, 18, 18);
-    lv_anim_set_path_cb(&widget->anim, lv_anim_path_linear);
+    lv_anim_set_values(&widget->anim, 11, 18);
+    lv_anim_set_path_cb(&widget->anim, lv_anim_path_idle_glitch);
     lv_anim_set_time(&widget->anim, 2000);
 
     lv_anim_start(&widget->anim);
@@ -151,8 +158,8 @@ void arasaka_anim_run_info_glitch(struct zmk_widget_arasaka *widget) {
 }
 
 void arasaka_anim_run_info_idle(struct zmk_widget_arasaka *widget) {
-    lv_anim_set_values(&widget->anim, 31, 31);
-    lv_anim_set_path_cb(&widget->anim, lv_anim_path_linear);
+    lv_anim_set_values(&widget->anim, 19, 31);
+    lv_anim_set_path_cb(&widget->anim, lv_anim_path_idle_glitch);
     lv_anim_set_time(&widget->anim, 3000);
 
     lv_anim_start(&widget->anim);
