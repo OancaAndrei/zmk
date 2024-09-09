@@ -12,10 +12,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/display/widgets/arasaka.h>
 #include <zmk/event_manager.h>
 
-#if IS_ENABLED(CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED)
-#error "Arasaka logo widget only works with the system work queue currently"
-#endif
-
 #define ARASAKA_IDLE_GLITCH_CHANCE 90
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
